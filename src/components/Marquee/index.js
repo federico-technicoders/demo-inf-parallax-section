@@ -1,32 +1,17 @@
 'use client'
 
+import { useMemo, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import Image from 'next/image'
-import { useMemo, useRef } from 'react'
 import { twJoin, twMerge } from 'tailwind-merge'
 
-import gsapIcon from '@/assets/technologyIcons/gsap.svg'
-import nextIcon from '@/assets/technologyIcons/next.svg'
-import openGLIcon from '@/assets/technologyIcons/opengl.svg'
-import reactIcon from '@/assets/technologyIcons/react.svg'
-import tailwindIcon from '@/assets/technologyIcons/tailwind.svg'
-import threeIcon from '@/assets/technologyIcons/three.svg'
-import typescriptIcon from '@/assets/technologyIcons/typescript.svg'
 
-
-const ICONS = [gsapIcon, nextIcon, openGLIcon, reactIcon, tailwindIcon, threeIcon, typescriptIcon]
-
-const ELEMENTS = [...ICONS, ...ICONS]
-
-const TestimonialsMarquee = ({ isReversed = false, className }) => {
+const TestimonialsMarquee = ({ ELEMENTS=[], isReversed = false, className }) => {
   const movingContainer = useRef(null)
   const timeline = useRef()
 
-  useGSAP(
-    () => {
-      // Translate the container half of its width to the left (the width of list)
-      // Then set it back to the start, and repeat infinitely.
+  useGSAP(() => {
       const setupInfiniteMarqueeTimeline = () => {
         gsap.set(movingContainer.current, {
           xPercent: isReversed ? -50 : 0,
@@ -61,24 +46,22 @@ const TestimonialsMarquee = ({ isReversed = false, className }) => {
     timelineTimeScaleTween.current = gsap.to(timeline.current, { timeScale: 1, duration: 0.2 })
   }
 
-  const list = useMemo(
-    () => (
-      <div className="flex w-fit items-center gap-10">
-        {ELEMENTS.map((src, index) => {
-          const isLast = index === ELEMENTS.length - 1
-          return (
-            <div
-              key={index}
-              className={twJoin('relative flex shrink-0 items-center justify-center', isLast && 'mr-10')}
-              style={{ height: src.height, width: src.width }}>
-              <Image src={src} alt="Technology icon" height={40} className="object-contain" />
-            </div>
-          )
-        })}
-      </div>
-    ),
-    [],
-  )
+    const list = useMemo(() => (
+        <div className="flex w-fit items-center gap-10">
+            {ELEMENTS.map((src, index) => {
+                const isLast = index === ELEMENTS.length - 1
+                return (
+                    <div
+                        key={index}
+                        className={twJoin('relative flex shrink-0 items-center justify-center', isLast && 'mr-10')}
+                        style={{ height: src.height, width: src.width }}>
+                        <Image src={src} alt="Technology icon" height={40} className="object-contain" />
+                    </div>
+                )
+            })}
+        </div>
+        ),
+    [])
 
   return (
     <div
